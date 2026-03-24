@@ -1,0 +1,17 @@
+{
+  "units": {
+    "distance": "km"
+  },
+  "location": {
+    "id": 15895,
+    "name": "Darlington",
+    "region": "Perth",
+    "state": "WA",
+    "postcode": "6070",
+    "timeZone": "Australia/Perth",
+    "lat": -31.919,
+    "lng": 116.0788,
+    "typeId": 20,
+    "distance": 0.1
+  }
+}

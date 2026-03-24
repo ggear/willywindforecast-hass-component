@@ -1,0 +1,36 @@
+{
+  "location": {
+    "id": 15895,
+    "name": "Darlington",
+    "region": "Perth",
+    "state": "WA",
+    "postcode": "6070",
+    "timeZone": "Australia/Perth",
+    "lat": -31.919,
+    "lng": 116.0788,
+    "typeId": 20
+  },
+  "forecasts": {
+    "wind": {
+      "days": [
+        {
+          "dateTime": "2026-03-24 00:00:00",
+          "entries": [
+            {"dateTime": "2026-03-24 00:00:00", "speed": 30.0, "direction": 90, "directionText": "E"},
+            {"dateTime": "2026-03-24 01:00:00", "speed": 20.0, "direction": 90, "directionText": "E"},
+            {"dateTime": "2026-03-24 02:00:00", "speed": 10.0, "direction": 90, "directionText": "E"}
+          ]
+        },
+        {
+          "dateTime": "2026-03-25 00:00:00",
+          "entries": [
+            {"dateTime": "2026-03-25 00:00:00", "speed": 15.0, "direction": 180, "directionText": "S"},
+            {"dateTime": "2026-03-25 01:00:00", "speed": 25.0, "direction": 180, "directionText": "S"}
+          ]
+        }
+      ],
+      "units": {"speed": "km/h"},
+      "issueDateTime": "2026-03-24 11:11:29"
+    }
+  }
+}
