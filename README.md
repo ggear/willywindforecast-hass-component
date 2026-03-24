@@ -4,7 +4,7 @@ A Home Assistant custom component that provides wind forecast sensor data from t
 
 ## Installation
 
-Copy this folder to `<config_dir>/custom_components/willywindforecast/`.
+Copy `custom_components/willywindforecast/` to `<config_dir>/custom_components/willywindforecast/`.
 
 ## Configuration
 
