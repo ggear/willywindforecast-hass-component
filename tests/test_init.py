@@ -38,9 +38,10 @@ class TestComputeDominantDirection:
     """Tests for the speed-weighted circular mean direction algorithm."""
 
     def test_empty_entries(self):
-        deg, text = _compute_dominant_direction([])
+        deg, abbrev, name = _compute_dominant_direction([])
         assert deg == 0.0
-        assert text == "N"
+        assert abbrev == "N"
+        assert name == "Northerly"
 
     def test_uniform_east(self):
         entries = [
@@ -48,54 +49,61 @@ class TestComputeDominantDirection:
             {"speed": 10, "direction": 90},
             {"speed": 10, "direction": 90},
         ]
-        deg, text = _compute_dominant_direction(entries)
+        deg, abbrev, name = _compute_dominant_direction(entries)
         assert deg == 90.0
-        assert text == "E"
+        assert abbrev == "E"
+        assert name == "Easterly"
 
     def test_uniform_south(self):
         entries = [
             {"speed": 20, "direction": 180},
             {"speed": 20, "direction": 180},
         ]
-        deg, text = _compute_dominant_direction(entries)
+        deg, abbrev, name = _compute_dominant_direction(entries)
         assert deg == 180.0
-        assert text == "S"
+        assert abbrev == "S"
+        assert name == "Southerly"
 
     def test_uniform_north(self):
         entries = [{"speed": 10, "direction": 0}]
-        deg, text = _compute_dominant_direction(entries)
+        deg, abbrev, name = _compute_dominant_direction(entries)
         assert deg == 0.0
-        assert text == "N"
+        assert abbrev == "N"
+        assert name == "Northerly"
 
     def test_uniform_west(self):
         entries = [{"speed": 10, "direction": 270}]
-        deg, text = _compute_dominant_direction(entries)
+        deg, abbrev, name = _compute_dominant_direction(entries)
         assert deg == 270.0
-        assert text == "W"
+        assert abbrev == "W"
+        assert name == "Westerly"
 
     def test_speed_weighted_toward_stronger_wind(self):
         entries = [
             {"speed": 100, "direction": 90},
             {"speed": 1, "direction": 270},
         ]
-        deg, text = _compute_dominant_direction(entries)
+        deg, abbrev, name = _compute_dominant_direction(entries)
         assert 85 < deg < 95
-        assert text == "E"
+        assert abbrev == "E"
+        assert name == "Easterly"
 
     def test_northwest(self):
         entries = [{"speed": 10, "direction": 315}]
-        deg, text = _compute_dominant_direction(entries)
+        deg, abbrev, name = _compute_dominant_direction(entries)
         assert deg == 315.0
-        assert text == "NW"
+        assert abbrev == "NW"
+        assert name == "North-Westerly"
 
     def test_wrapping_around_north(self):
         entries = [
             {"speed": 10, "direction": 350},
             {"speed": 10, "direction": 10},
         ]
-        deg, text = _compute_dominant_direction(entries)
+        deg, abbrev, name = _compute_dominant_direction(entries)
         assert deg < 11 or deg > 349
-        assert text == "N"
+        assert abbrev == "N"
+        assert name == "Northerly"
 
 
 class TestProcessForecast:
@@ -109,12 +117,14 @@ class TestProcessForecast:
         assert result[0]["speed_max"] == 30.0
         assert result[0]["speed_min"] == 10.0
         assert result[0]["dominant_direction"] == 90.0
-        assert result[0]["dominant_direction_text"] == "E"
+        assert result[0]["dominant_direction_text"] == "Easterly"
+        assert result[0]["dominant_direction_abbreviation"] == "E"
 
         assert result[1]["speed_max"] == 25.0
         assert result[1]["speed_min"] == 15.0
         assert result[1]["dominant_direction"] == 180.0
-        assert result[1]["dominant_direction_text"] == "S"
+        assert result[1]["dominant_direction_text"] == "Southerly"
+        assert result[1]["dominant_direction_abbreviation"] == "S"
 
     def test_empty_entries_day(self):
         data = {
@@ -151,7 +161,8 @@ class TestProcessForecast:
         assert result[0]["speed_max"] == 42.0
         assert result[0]["speed_min"] == 42.0
         assert result[0]["dominant_direction"] == 225.0
-        assert result[0]["dominant_direction_text"] == "SW"
+        assert result[0]["dominant_direction_text"] == "South-Westerly"
+        assert result[0]["dominant_direction_abbreviation"] == "SW"
 
 
 class TestSetup:
@@ -268,7 +279,8 @@ class TestSetup:
             update_fn()
 
         assert hass.data[DOMAIN]["forecast"][0]["speed_max"] == 50.0
-        assert hass.data[DOMAIN]["forecast"][1]["dominant_direction_text"] == "W"
+        assert hass.data[DOMAIN]["forecast"][1]["dominant_direction_text"] == "Westerly"
+        assert hass.data[DOMAIN]["forecast"][1]["dominant_direction_abbreviation"] == "W"
 
     async def test_poll_error_preserves_existing_data(self, hass):
         hass.states.async_set("zone.home", "zoning", {

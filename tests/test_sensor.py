@@ -48,7 +48,7 @@ async def _setup_integration(hass):
         await hass.async_block_till_done()
 
     for day in range(VALID_CONFIG[DOMAIN]["forecast_days"]):
-        for metric in ("speed_max", "speed_min", "dominant_direction", "dominant_direction_text"):
+        for metric in ("speed_max", "speed_min", "dominant_direction", "dominant_direction_text", "dominant_direction_abbreviation"):
             await async_update_entity(
                 hass, f"sensor.willy_wind_forecast_{metric}_{day}"
             )
@@ -64,7 +64,7 @@ class TestSensorPlatform:
         assert await _setup_integration(hass)
 
         for day in range(2):
-            for metric in ("speed_max", "speed_min", "dominant_direction", "dominant_direction_text"):
+            for metric in ("speed_max", "speed_min", "dominant_direction", "dominant_direction_text", "dominant_direction_abbreviation"):
                 entity_id = f"sensor.willy_wind_forecast_{metric}_{day}"
                 state = hass.states.get(entity_id)
                 assert state is not None, f"Entity {entity_id} not found"
@@ -87,6 +87,11 @@ class TestSensorPlatform:
     async def test_day_0_dominant_direction_text(self, hass):
         await _setup_integration(hass)
         state = hass.states.get("sensor.willy_wind_forecast_dominant_direction_text_0")
+        assert state.state == "Easterly"
+
+    async def test_day_0_dominant_direction_abbreviation(self, hass):
+        await _setup_integration(hass)
+        state = hass.states.get("sensor.willy_wind_forecast_dominant_direction_abbreviation_0")
         assert state.state == "E"
 
     async def test_day_1_values(self, hass):
@@ -94,7 +99,8 @@ class TestSensorPlatform:
         assert hass.states.get("sensor.willy_wind_forecast_speed_max_1").state == "25.0"
         assert hass.states.get("sensor.willy_wind_forecast_speed_min_1").state == "15.0"
         assert hass.states.get("sensor.willy_wind_forecast_dominant_direction_1").state == "180.0"
-        assert hass.states.get("sensor.willy_wind_forecast_dominant_direction_text_1").state == "S"
+        assert hass.states.get("sensor.willy_wind_forecast_dominant_direction_text_1").state == "Southerly"
+        assert hass.states.get("sensor.willy_wind_forecast_dominant_direction_abbreviation_1").state == "S"
 
     async def test_speed_units(self, hass):
         await _setup_integration(hass)
@@ -109,6 +115,11 @@ class TestSensorPlatform:
     async def test_direction_text_no_unit(self, hass):
         await _setup_integration(hass)
         state = hass.states.get("sensor.willy_wind_forecast_dominant_direction_text_0")
+        assert state.attributes.get("unit_of_measurement") is None
+
+    async def test_direction_abbreviation_no_unit(self, hass):
+        await _setup_integration(hass)
+        state = hass.states.get("sensor.willy_wind_forecast_dominant_direction_abbreviation_0")
         assert state.attributes.get("unit_of_measurement") is None
 
     async def test_no_discovery_no_entities(self, hass):
